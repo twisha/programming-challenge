@@ -112,7 +112,18 @@ namespace programming_challenge
             await Task.WhenAll(taskGetSubscribers, taskGetCategories);
 
             var subscribers = taskGetSubscribers.Result;
+            if (subscribers == null || !subscribers.Any())
+            {
+                Console.WriteLine("No subscribers found! Cannot continue further...");
+                return;
+            }
             var categories = taskGetCategories.Result;
+            if (categories == null || !categories.Any())
+            {
+                Console.WriteLine("No categories found! Cannot continue further...");
+                return;
+            }
+
             var dictionaryMagazineIdsByCategory = categories.Distinct()
                 .AsParallel()
                 .Select(async q => new KeyValuePair<string, IEnumerable<Magazine>>(q, await GetMagazinesByCategory(q)))
