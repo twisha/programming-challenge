@@ -138,8 +138,6 @@ namespace programming_challenge
             Console.WriteLine("Answer Check Response is as follows: ");
             Console.WriteLine($"AnswerCorrect: {answerCheckResponseDetail.AnswerCorrect}");
             Console.WriteLine($"TotalTime: {answerCheckResponseDetail.TotalTime}");
-
-            Console.ReadLine();
         }
     }
 }
