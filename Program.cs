@@ -1,4 +1,5 @@
-﻿using programming_challenge.Models;
+﻿using FluentAssertions;
+using ProgrammingChallenge.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -77,6 +78,20 @@ namespace programming_challenge
             throw new Exception($"Api call to get magazines for category {category} failed. Response Code: {response.StatusCode}");
         }
 
+        private static async Task<AnswerCheckResponseDetail> SubmitAnswer(AnswerCheckRequest answerCheckRequest)
+        {
+            var response = await httpClient.PostAsJsonAsync<AnswerCheckRequest>($"{baseUrl}/api/answer/{token}",
+                answerCheckRequest);
+            if (response.IsSuccessStatusCode)
+            {
+                var answerCheckResponse = await response.Content.ReadAsAsync<AnswerCheckResponse>();
+                if (answerCheckResponse.Success) return answerCheckResponse.Detail;
+                throw new Exception($"Unsuccessful at fetching answer check response. Message: {answerCheckResponse.Message}");
+            }
+
+            throw new Exception($"Api call to get answer check response failed. Response Code: {response.StatusCode}");
+        }
+
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome to a new programming challenge!");
@@ -113,10 +128,17 @@ namespace programming_challenge
                 ts.Hours, ts.Minutes, ts.Seconds,
                 ts.Milliseconds / 10);
             Console.WriteLine("RunTime " + elapsedTime);
-
             Console.WriteLine($"Total Categories: {categories.Count()}");
             Console.WriteLine($"Total Subscribers: {subscribers.Count()}");
             Console.WriteLine($"Filtered Subscribers: {filteredSubscribers.Count()}");
+
+            Console.WriteLine("Submitting answer...");
+            var filteredSubscriberIds = filteredSubscribers.Select(q => q.Id);
+            var answerCheckResponseDetail = await SubmitAnswer(new AnswerCheckRequest { Subscribers = filteredSubscriberIds });
+            Console.WriteLine("Answer Check Response is as follows: ");
+            Console.WriteLine($"AnswerCorrect: {answerCheckResponseDetail.AnswerCorrect}");
+            Console.WriteLine($"TotalTime: {answerCheckResponseDetail.TotalTime}");
+
             Console.ReadLine();
         }
     }

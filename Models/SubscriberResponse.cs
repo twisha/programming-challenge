@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace programming_challenge.Models
+namespace ProgrammingChallenge.Models
 {
     public class SubscriberResponse
     {

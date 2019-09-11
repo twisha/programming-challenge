@@ -1,4 +1,4 @@
-﻿namespace programming_challenge.Models
+﻿namespace ProgrammingChallenge.Models
 {
     public class Magazine
     {
